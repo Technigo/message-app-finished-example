@@ -5,19 +5,25 @@ import { MessageList } from "./components/MessageList"
 import { PostMessage } from "./components/PostMessage"
 
 export const App = () => {
-  const [messageList, setMessageList] = useState([
-    {_id: "123", message: "This is a message"},
-    {_id: "456", message: "This is another message"}
-  ])
+  const [messageList, setMessageList] = useState([])
 
   const fetchPosts = () => {
     // This function should fetch from the API and update the messageList state with the new data
     console.log("fetchPosts called")
+
+    fetch(`${BASE_URL}/messages`)
+      .then(response => response.json())
+      .then(data => setMessageList(data))
+      .catch(error => console.error("Error fetching messages:", error))
   }
     
+  useEffect(() => {
+    fetchPosts()
+  }, [])
+
   return (
     <>
-      <PostMessage />
+      <PostMessage onNewMessage={fetchPosts} />
       <MessageList messageList={messageList} />
     </>
   )
